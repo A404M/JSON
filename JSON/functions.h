@@ -18,7 +18,7 @@ void deleteSpaces(std::string& string){
         }else if(current == '\'' || current == '\"'){
             if(kindStr == current && string[i-1] != '\\'){//in string
                 kindStr = '\0';//out of string
-            }else{//not in string
+            }else if(!kindStr){//not in string
                 kindStr = current;//go in string
             }
         }
