@@ -3,7 +3,6 @@
 //#include "testing_lib/simdjson.h"
 #include <fstream>
 #include <chrono>
-#include <queue>
 
 using namespace std;
 using namespace json;
@@ -11,16 +10,12 @@ using namespace json;
 
 void doProcess(const string& fileName);
 
-int c = 0;//extern
-
 int main(){
     std::string fileName;
     cin >> fileName;
     cout << endl << endl;
     for(int i = 0;i < 10;++i)
         doProcess(fileName);
-    
-    cout << c;
     return 0;
 }
 
@@ -50,15 +45,3 @@ void doProcess(const string& fileName){
     cout << "Parsing:\t\t\t\t\t" << chrono::duration<long double, milli>(diff).count() << "ms\n";
     cout << "Total:\t\t\t\t\t\t" << total << "ms\n\n\n";
 }
-//5929
-/*void doProcess(const string &fileName){
-    auto start = chrono::high_resolution_clock::now();
-    ondemand::parser parser;
-    padded_string json = padded_string::load(fileName);
-    ondemand::document tweets = parser.iterate(json);
-    std::cout << uint64_t(tweets["k1"]["5929"]["num"]) << std::endl;
-    //std::cout << uint64_t(tweets["search_metadata"]["count"]) << " results." << std::endl;
-
-    auto diff = chrono::high_resolution_clock::now() - start;
-    cout << "Parsing:\t\t\t\t" << chrono::duration<long double, milli>(diff).count() << "ms\n";
-}*/

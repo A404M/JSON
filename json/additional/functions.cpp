@@ -3,37 +3,6 @@
 #include "../json-object/JSONObject.hpp"
 
 namespace json{
-    extern Object getNextValue(std::string::const_iterator &begin,std::string::const_iterator end){
-        jumpAcrossSpaces(begin,end);
-        auto &c = *begin;
-        switch(c){
-            case '\"':
-                return Object(getNextString(begin,end));
-            case 't':
-            case 'f':
-                return Object(getNextBool(begin,end));
-            case 'n':
-                if(isNextNull(begin,end)){
-                    return Object();
-                }
-                break;
-            case '[':
-                return Object(JSONArray(begin,end));
-            case '{':
-                return Object(JSONObject(begin,end));
-            case '+':
-            case '-':
-                goto NUMBER;
-            default:
-                if(isdigit(c)){
-                    NUMBER:
-                    return Object(getNextDouble(begin,end));
-                }
-                throw std::runtime_error("getValue");
-        }
-        throw std::runtime_error("getValue");
-    }
-
     extern std::string getNextString(std::string::const_iterator &begin,std::string::const_iterator end){
         std::string result;
         auto it = begin;
@@ -42,10 +11,11 @@ namespace json{
         }
         ++it;
         for(;it < end;++it){
-            if(*it == *begin){
+            auto c = *it;
+            if(c == '\"'){
                 begin = ++it;
                 return result;//without string markers
-            }else if(*it == '\\'){
+            }else if(c == '\\'){
                 ++it;
                 switch(*it){
                     case 'a':
@@ -101,22 +71,22 @@ namespace json{
         char *p;
         auto pbegin = &*begin;
         auto result = std::strtold(pbegin,&p);
-        if(end-begin <= p-pbegin){
-            throw std::runtime_error("excepted ','");
-        }
         begin += p-pbegin;
+        if(begin >= end)
+            throw std::runtime_error("excepted ','");
         return result;
     }
 
     extern bool getNextBool(std::string::const_iterator &begin,std::string::const_iterator end){
-        if(*begin == 't'){
+        auto c = *begin;
+        if(c == 't'){
             if(*++begin == 'r' && *++begin == 'u' && *++begin == 'e'){
                 ++begin;
                 if(begin >= end)
                     throw std::runtime_error("getNextBool");
                 return true;
             }
-        }else if(*begin == 'f'){
+        }else if(c == 'f'){
             if(*++begin == 'a' && *++begin == 'l' && *++begin == 's' && *++begin == 'e'){
                 ++begin;
                 if(begin >= end)
@@ -137,7 +107,7 @@ namespace json{
         throw std::runtime_error("unknown keyword");
     }
     extern void jumpAcrossSpaces(std::string::const_iterator &begin,std::string::const_iterator end){
-        for(;begin < end && std::isspace(*begin);++begin);
+        for(;std::isspace(*begin) && begin < end;++begin);
     }
     extern std::string unicodeToUTF8(unsigned int codepoint){
         std::string out;

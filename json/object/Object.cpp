@@ -1,7 +1,7 @@
 #include "Object.hpp"
 #include "../json-array/JSONArray.hpp"
 #include "../json-object/JSONObject.hpp"
-#include <sstream>
+//#include <sstream>
 #include <iomanip>
 
 using namespace json;
@@ -27,9 +27,8 @@ Object::Object(const JSONArray &jsonArray): holder(new JSONArray(jsonArray)), ty
 Object::Object(const JSONObject &jsonObject): holder(new JSONObject(jsonObject)), type(JSON_OBJECT_T){
     //empty
 }
-extern int c;
+
 Object::Object(const Object &object): type(object.type){
-    c++;
     switch (type) {
         case NULL_T:
             break;
@@ -157,7 +156,7 @@ Object &Object::operator=(const Object &object){
                 *((JSONObject *)holder) = *((JSONObject*)object.holder);
                 break;
             default:
-                throw std::runtime_error("Object::delVal");
+                throw std::runtime_error("Object::operator=");
         }
     }else{
         delVal();
@@ -181,7 +180,7 @@ Object &Object::operator=(const Object &object){
                 holder = new JSONObject(*((JSONObject *) object.holder));
                 break;
             default:
-                throw std::runtime_error("Object::delVal");
+                throw std::runtime_error("Object::operator=");
         }
     }
     return *this;

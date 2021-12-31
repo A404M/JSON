@@ -3,8 +3,10 @@
 
 #include "../additional/functions.hpp"
 #include <vector>
+//#include <string>
 
 namespace json{
+    class Object;
     class JSONArray{
     public:
         typedef std::vector<Object>::size_type size_type;
@@ -24,6 +26,9 @@ namespace json{
         std::string toString() const;
 
         size_type size() const;
+
+    private:
+        really_inline void getNextValue(std::string::const_iterator &begin,std::string::const_iterator end);
     };
 }//namespace json
 

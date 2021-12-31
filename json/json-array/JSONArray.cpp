@@ -1,5 +1,6 @@
 #include "JSONArray.hpp"
 #include "../additional/functions.hpp"
+#include "../json-object/JSONObject.hpp"
 
 using namespace json;
 
@@ -22,11 +23,13 @@ JSONArray::JSONArray(std::string::const_iterator &begin,std::string::const_itera
         ++begin;
         return;
     }
-    --begin;
+    goto AFTER_INC;//instead of --begin, ++begin
+    //--begin;
     
     do{
         ++begin;
-        holder.emplace_back(getNextValue(begin, end));
+        AFTER_INC:
+        getNextValue(begin, end);
         jumpAcrossSpaces(begin,end);
     }while(begin < end && *begin == ',');
 
@@ -62,4 +65,39 @@ std::string JSONArray::toString() const {
 
 JSONArray::size_type JSONArray::size() const {
     return holder.size();
+}
+
+really_inline void JSONArray::getNextValue(std::string::const_iterator &begin,std::string::const_iterator end) {
+    jumpAcrossSpaces(begin,end);
+    auto c = *begin;
+    switch(c){
+        case '\"':
+            holder.emplace_back(getNextString(begin, end));
+            return;
+        case 't':
+        case 'f':
+            holder.emplace_back(getNextBool(begin, end));
+            return;
+        case 'n':
+            if(isNextNull(begin,end)){
+                holder.emplace_back();//null
+                return;
+            }
+        case '[':
+            holder.emplace_back(JSONArray(begin, end));
+            return;
+        case '{':
+            holder.emplace_back(JSONObject(begin, end));
+            return;
+        case '+':
+        case '-':
+            goto NUMBER;
+        default:
+            if(isdigit(c)){
+                NUMBER:
+                holder.emplace_back(getNextDouble(begin, end));
+                return;
+            }
+    }
+    throw std::runtime_error("getValue");
 }

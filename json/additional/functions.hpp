@@ -3,11 +3,12 @@
 
 #include <string>
 #include <stdexcept>
+#include <vector>
+#include <map>
 #include "../object/Object.hpp"
 #include "macros.hpp"
 
 namespace json{
-    extern Object getNextValue(std::string::const_iterator &begin,std::string::const_iterator end);
     extern std::string getNextString(std::string::const_iterator &begin,std::string::const_iterator end);
     extern long double getNextDouble(std::string::const_iterator &begin,std::string::const_iterator end);
     extern bool getNextBool(std::string::const_iterator &begin,std::string::const_iterator end);

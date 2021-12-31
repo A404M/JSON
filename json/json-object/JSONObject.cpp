@@ -1,5 +1,6 @@
 #include "JSONObject.hpp"
 #include "../additional/functions.hpp"
+#include "../json-array/JSONArray.hpp"
 
 using namespace json;
 
@@ -20,18 +21,13 @@ JSONObject::JSONObject(std::string::const_iterator &begin,std::string::const_ite
         ++begin;
         return;
     }
-    //--begin;
     goto AFTER_INC;//instead of --begin, ++begin
+    //--begin;
 
     do{
         ++begin;
         AFTER_INC:
-        jumpAcrossSpaces(begin,end);
-        std::string key = getNextString(begin,end);
-        if(*begin != ':')
-            throw std::runtime_error("excepted ':'");
-        ++begin;
-        holder[key] = getNextValue(begin,end);
+        getNextValue(begin,end);
         jumpAcrossSpaces(begin,end);
     }while(begin < end && *begin == ',');
 
@@ -72,4 +68,44 @@ std::string JSONObject::toString() const {
 
 JSONObject::size_type JSONObject::size() const {
     return holder.size();
+}
+
+really_inline void JSONObject::getNextValue(std::string::const_iterator &begin,std::string::const_iterator end) {
+    jumpAcrossSpaces(begin,end);
+    std::string key = getNextString(begin,end);
+    if(*begin != ':')
+        throw std::runtime_error("excepted ':'");
+    ++begin;
+    jumpAcrossSpaces(begin,end);
+    auto c = *begin;
+    switch(c){
+        case '\"':
+            holder.emplace(key,getNextString(begin,end));
+            return;
+        case 't':
+        case 'f':
+            holder.emplace(key,getNextBool(begin,end));
+            return;
+        case 'n':
+            if(isNextNull(begin,end)){
+                holder.emplace(key,nullptr);
+                return;
+            }
+        case '[':
+            holder.emplace(key,JSONArray(begin,end));
+            return;
+        case '{':
+            holder.emplace(key,JSONObject(begin,end));
+            return;
+        case '+':
+        case '-':
+            goto NUMBER;
+        default:
+            if(isdigit(c)){
+                NUMBER:
+                holder.emplace(key,getNextDouble(begin,end));
+                return;
+            }
+    }
+    throw std::runtime_error("getValue");
 }

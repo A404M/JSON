@@ -1,6 +1,7 @@
 #ifndef JSON_JSONOBJECT_HPP
 #define JSON_JSONOBJECT_HPP
 
+#include "../additional/macros.hpp"
 #include <string>
 #include <map>
 
@@ -25,6 +26,9 @@ namespace json{
         std::string toString() const;
 
         size_type size() const;
+
+    private:
+        really_inline void getNextValue(std::string::const_iterator &begin,std::string::const_iterator end);
     };
 }//namespace json
 
