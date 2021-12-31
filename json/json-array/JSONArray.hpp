@@ -9,6 +9,7 @@
 namespace json{
     class Object;
     class JSONArray{
+        friend class JSONObject;
     public:
         typedef std::vector<Object>::size_type size_type;
     private:
@@ -16,7 +17,9 @@ namespace json{
     public:
         JSONArray();
         explicit JSONArray(const std::string &str);
+    private:
         JSONArray(std::string::const_iterator &begin,std::string::const_iterator end);
+    public:
         JSONArray(const JSONArray&) = default;
 
         JSONArray &operator=(const JSONArray&) = default;

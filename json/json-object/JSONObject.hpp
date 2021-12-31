@@ -8,6 +8,7 @@
 namespace json{
     class Object;
     class JSONObject{
+        friend class JSONArray;
     public:
         typedef std::map<std::string,Object>::size_type size_type;
     private:
@@ -15,7 +16,9 @@ namespace json{
     public:
         JSONObject();
         explicit JSONObject(const std::string &str);
+    private:
         JSONObject(std::string::const_iterator &begin,std::string::const_iterator end);
+    public:
         JSONObject(const JSONObject&) = default;
 
         JSONObject &operator=(const JSONObject&) = default;

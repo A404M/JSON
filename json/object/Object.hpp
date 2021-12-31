@@ -45,21 +45,21 @@ namespace json{
         Object &operator=(const JSONObject &jsonObject);
         Object &operator=(const Object &object);
 
-        Type getType() const;
+        really_inline Type getType() const;
 
-        bool isNull();
-        
-        Bool& getBool();
-        Number& getNumber();
-        String& getString();
-        JSONArray& getJSONArray();
-        JSONObject& getJSONObject();
+        really_inline bool isNull();
 
-        const Bool& getBool() const;
-        const Number& getNumber() const;
-        const String& getString() const;
-        const JSONArray& getJSONArray() const;
-        const JSONObject& getJSONObject() const;
+        really_inline Bool& getBool();
+        really_inline Number& getNumber();
+        really_inline String& getString();
+        really_inline JSONArray& getJSONArray();
+        really_inline JSONObject& getJSONObject();
+
+        really_inline const Bool& getBool() const;
+        really_inline const Number& getNumber() const;
+        really_inline const String& getString() const;
+        really_inline const JSONArray& getJSONArray() const;
+        really_inline const JSONObject& getJSONObject() const;
 
         std::string toString() const;
     private:

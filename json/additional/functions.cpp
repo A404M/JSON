@@ -1,6 +1,4 @@
 #include "functions.hpp"
-#include "../json-array/JSONArray.hpp"
-#include "../json-object/JSONObject.hpp"
 
 namespace json{
     extern std::string getNextString(std::string::const_iterator &begin,std::string::const_iterator end){
@@ -56,7 +54,7 @@ namespace json{
                         break;
                     case 'u':
                         ++it;
-                        result += unicodeToUTF8(hexToDecimal(std::string(it,it+4)));
+                        unicodeToUTF8(hexToDecimal(std::string(it,it+4)),result);
                         it += 4;
                         break;
                 }
@@ -109,9 +107,7 @@ namespace json{
     extern void jumpAcrossSpaces(std::string::const_iterator &begin,std::string::const_iterator end){
         for(;std::isspace(*begin) && begin < end;++begin);
     }
-    extern std::string unicodeToUTF8(unsigned int codepoint){
-        std::string out;
-
+    extern void unicodeToUTF8(unsigned int codepoint,std::string &out){
         if (codepoint <= 0x7f)
             out.append(1, static_cast<char>(codepoint));
         else if (codepoint <= 0x7ff)
@@ -132,7 +128,6 @@ namespace json{
             out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
             out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
         }
-        return out;
     }
     extern unsigned int hexToDecimal(const std::string &hex){
         unsigned int result = 0,p = 1;

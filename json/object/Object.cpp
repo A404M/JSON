@@ -68,7 +68,7 @@ Object &Object::operator=(std::nullptr_t){
 }
 Object &Object::operator=(Bool b){
     if(type == BOOL_T){
-        *(Bool*)holder = b;
+        *reinterpret_cast<Bool*>(holder) = b;
     }else{
         if (type != NULL_T) {
             delVal();
@@ -80,7 +80,7 @@ Object &Object::operator=(Bool b){
 }
 Object &Object::operator=(Number num){
     if(type == DOUBLE_T){
-        *(Number*)holder = num;
+        *reinterpret_cast<Number*>(holder) = num;
     }else{
         if (type != NULL_T) {
             delVal();
@@ -92,7 +92,7 @@ Object &Object::operator=(Number num){
 }
 Object &Object::operator=(const char *str){
     if(type == STRING_T){
-        *(String*)holder = str;
+        *reinterpret_cast<String*>(holder) = str;
     }else{
         if (type != NULL_T) {
             delVal();
@@ -104,7 +104,7 @@ Object &Object::operator=(const char *str){
 }
 Object &Object::operator=(const String &str){
     if(type == STRING_T){
-        *(String*)holder = str;
+        *reinterpret_cast<String*>(holder) = str;
     }else{
         if (type != NULL_T) {
             delVal();
@@ -116,7 +116,7 @@ Object &Object::operator=(const String &str){
 }
 Object &Object::operator=(const JSONArray &jsonArray){
     if(type == JSON_ARRAY_T){
-        *(JSONArray*)holder = jsonArray;
+        *reinterpret_cast<JSONArray*>(holder) = jsonArray;
     }else{
         if (type != NULL_T) {
             delVal();
@@ -128,7 +128,7 @@ Object &Object::operator=(const JSONArray &jsonArray){
 }
 Object &Object::operator=(const JSONObject &jsonObject){
     if(type == JSON_OBJECT_T){
-        *(JSONObject*)holder = jsonObject;
+        *reinterpret_cast<JSONObject*>(holder) = jsonObject;
     }else{
         if (type != NULL_T) {
             delVal();
@@ -144,19 +144,19 @@ Object &Object::operator=(const Object &object){
             case NULL_T:
                 break;
             case BOOL_T:
-                *((Bool *)holder) = *((Bool*)object.holder);
+                *reinterpret_cast<Bool*>(holder) = *reinterpret_cast<Bool*>(object.holder);
                 break;
             case DOUBLE_T:
-                *((Number *)holder) = *((Number*)object.holder);
+                *reinterpret_cast<Number*>(holder) = *reinterpret_cast<Number*>(object.holder);
                 break;
             case STRING_T:
-                *((String *)holder) = *((String*)object.holder);
+                *reinterpret_cast<String*>(holder) = *reinterpret_cast<String*>(object.holder);
                 break;
             case JSON_ARRAY_T:
-                *((JSONArray *)holder) = *((JSONArray*)object.holder);
+                *reinterpret_cast<JSONArray*>(holder) = *reinterpret_cast<JSONArray*>(object.holder);
                 break;
             case JSON_OBJECT_T:
-                *((JSONObject *)holder) = *((JSONObject*)object.holder);
+                *reinterpret_cast<JSONObject*>(holder) = *reinterpret_cast<JSONObject*>(object.holder);
                 break;
             default:
                 throw std::runtime_error("Object::operator=");
@@ -168,19 +168,19 @@ Object &Object::operator=(const Object &object){
             case NULL_T:
                 break;
             case BOOL_T:
-                holder = new Bool(*((Bool *) object.holder));
+                holder = new Bool(*reinterpret_cast<Bool*>(object.holder));
                 break;
             case DOUBLE_T:
-                holder = new Number(*((Number *) object.holder));
+                holder = new Number(*reinterpret_cast<Number*>(object.holder));
                 break;
             case STRING_T:
-                holder = new String(*((String *) object.holder));
+                holder = new String(*reinterpret_cast<String*>(object.holder));
                 break;
             case JSON_ARRAY_T:
-                holder = new JSONArray(*((JSONArray *) object.holder));
+                holder = new JSONArray(*reinterpret_cast<JSONArray*>(object.holder));
                 break;
             case JSON_OBJECT_T:
-                holder = new JSONObject(*((JSONObject *) object.holder));
+                holder = new JSONObject(*reinterpret_cast<JSONObject*>(object.holder));
                 break;
             default:
                 throw std::runtime_error("Object::operator=");
@@ -197,35 +197,35 @@ bool Object::isNull(){
     return type == NULL_T;
 }
 Bool& Object::getBool(){
-    return *((Bool*)holder);
+    return *reinterpret_cast<Bool*>(holder);
 }
 Number& Object::getNumber(){
-    return *((Number*)holder);
+    return *reinterpret_cast<Number*>(holder);
 }
 String& Object::getString(){
-    return *((String*)holder);
+    return *reinterpret_cast<String*>(holder);
 }
 JSONArray& Object::getJSONArray(){
-    return *((JSONArray*)holder);
+    return *reinterpret_cast<JSONArray*>(holder);
 }
 JSONObject& Object::getJSONObject(){
-    return *((JSONObject*)holder);
+    return *reinterpret_cast<JSONObject*>(holder);
 }
 
 const Bool& Object::getBool() const{
-    return *((Bool*)holder);
+    return *reinterpret_cast<Bool*>(holder);
 }
 const Number& Object::getNumber() const{
-    return *((Number*)holder);
+    return *reinterpret_cast<Number*>(holder);
 }
 const String& Object::getString() const{
-    return *((String*)holder);
+    return *reinterpret_cast<String*>(holder);
 }
 const JSONArray& Object::getJSONArray() const{
-    return *((JSONArray*)holder);
+    return *reinterpret_cast<JSONArray*>(holder);
 }
 const JSONObject& Object::getJSONObject() const{
-    return *((JSONObject*)holder);
+    return *reinterpret_cast<JSONObject*>(holder);
 }
 
 std::string Object::toString() const{
@@ -233,18 +233,18 @@ std::string Object::toString() const{
         case NULL_T:
             return "null";
         case BOOL_T:
-            return *((Bool*)holder)?"true":"false";
+            return *reinterpret_cast<Bool*>(holder)?"true":"false";
         case DOUBLE_T:{
             std::stringstream ss;
-            ss << std::setprecision(18) << *((Number*)holder);
+            ss << std::setprecision(18) << *reinterpret_cast<Number*>(holder);
             return ss.str();
         }
         case STRING_T:
-            return "\"" + *((String*)holder) + "\"";
+            return "\"" + *reinterpret_cast<String*>(holder) + "\"";
         case JSON_ARRAY_T:
-            return ((JSONArray*)holder)->toString();
+            return reinterpret_cast<JSONArray*>(holder)->toString();
         case JSON_OBJECT_T:
-            return ((JSONObject*)holder)->toString();
+            return reinterpret_cast<JSONObject*>(holder)->toString();
         default:
             throw std::runtime_error("Object::delVal");
     }
@@ -255,19 +255,19 @@ void Object::delVal(){
     case NULL_T:
         break;
     case BOOL_T:
-        delete ((Bool*)holder);
+        delete reinterpret_cast<Bool*>(holder);
         break;
     case DOUBLE_T:
-        delete ((Number*)holder);
+        delete reinterpret_cast<Number*>(holder);
         break;
     case STRING_T:
-        delete ((String*)holder);
+        delete reinterpret_cast<String*>(holder);
         break;
     case JSON_ARRAY_T:
-        delete ((JSONArray*)holder);
+        delete reinterpret_cast<JSONArray*>(holder);
         break;
     case JSON_OBJECT_T:
-        delete ((JSONObject*)holder);
+        delete reinterpret_cast<JSONObject*>(holder);
         break;
     default:
         throw std::runtime_error("Object::delVal");

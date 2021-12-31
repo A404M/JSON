@@ -12,7 +12,7 @@ int main(){
     std::string fileName;
     cin >> fileName;
     cout << endl << endl;
-    for(int i = 0;i < 5;++i)
+    for(int i = 0;i < 10;++i)
         doProcess(fileName);
     return 0;
 }
