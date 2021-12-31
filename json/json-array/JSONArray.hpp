@@ -1,9 +1,10 @@
 #ifndef JSON_JSONARRAY_HPP
 #define JSON_JSONARRAY_HPP
 
-#include "../additional/functions.hpp"
+#include "../object/Object.hpp"
+#include "../additional/macros.hpp"
 #include <vector>
-//#include <string>
+#include <string>
 
 namespace json{
     class Object;
@@ -28,7 +29,7 @@ namespace json{
         size_type size() const;
 
     private:
-        really_inline void getNextValue(std::string::const_iterator &begin,std::string::const_iterator end);
+        void getNextValue(std::string::const_iterator &begin,std::string::const_iterator end);
     };
 }//namespace json
 

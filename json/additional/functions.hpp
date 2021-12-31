@@ -16,6 +16,9 @@ namespace json{
     extern void jumpAcrossSpaces(std::string::const_iterator &begin,std::string::const_iterator end);
     extern std::string unicodeToUTF8(unsigned int codepoint);
     extern unsigned int hexToDecimal(const std::string &hex);
+    really_inline bool isDigit(char c){
+        return c >= '0' && c <= '9';
+    }
 }//namespace json
 
 

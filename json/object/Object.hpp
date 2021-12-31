@@ -10,6 +10,9 @@ namespace json{
 
     class Object{
     public:
+        using Bool = bool;
+        using Number = long double;
+        using String = std::string;
         enum Type{
             NULL_T,
             BOOL_T,
@@ -23,10 +26,10 @@ namespace json{
         Type type = NULL_T;
     public:
         explicit Object(nullptr_t = nullptr);//null
-        explicit Object(bool b);
-        explicit Object(long double num);
+        explicit Object(Bool b);
+        explicit Object(Number num);
         explicit Object(const char *str);
-        explicit Object(const std::string &str);
+        explicit Object(const String &str);
         explicit Object(const JSONArray &jsonArray);
         explicit Object(const JSONObject &jsonObject);
         Object(const Object &object);
@@ -34,10 +37,10 @@ namespace json{
         ~Object();
 
         Object &operator=(std::nullptr_t);
-        Object &operator=(bool b);
-        Object &operator=(long double num);
+        Object &operator=(Bool b);
+        Object &operator=(Number num);
         Object &operator=(const char *str);
-        Object &operator=(const std::string &str);
+        Object &operator=(const String &str);
         Object &operator=(const JSONArray &jsonArray);
         Object &operator=(const JSONObject &jsonObject);
         Object &operator=(const Object &object);
@@ -46,21 +49,21 @@ namespace json{
 
         bool isNull();
         
-        bool& getBool();
-        long double& getNumber();
-        std::string& getString();
+        Bool& getBool();
+        Number& getNumber();
+        String& getString();
         JSONArray& getJSONArray();
         JSONObject& getJSONObject();
 
-        const bool& getBool() const;
-        const long double& getNumber() const;
-        const std::string& getString() const;
+        const Bool& getBool() const;
+        const Number& getNumber() const;
+        const String& getString() const;
         const JSONArray& getJSONArray() const;
         const JSONObject& getJSONObject() const;
 
         std::string toString() const;
     private:
-        really_inline void delVal();
+        void delVal();
     };
 }//namespace json
 

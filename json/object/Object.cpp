@@ -6,19 +6,23 @@
 
 using namespace json;
 
+using Bool = Object::Bool;
+using Number = Object::Number;
+using String = Object::String;
+
 Object::Object(nullptr_t): holder(nullptr), type(NULL_T){
     //empty
 }
-Object::Object(bool b): holder(new bool(b)), type(BOOL_T){
+Object::Object(Bool b): holder(new Bool(b)), type(BOOL_T){
     //empty
 }
-Object::Object(long double num): holder(new long double(num)), type(DOUBLE_T){
+Object::Object(Number num): holder(new Number(num)), type(DOUBLE_T){
     //empty
 }
-Object::Object(const char *str): holder(new std::string(str)), type(STRING_T){
+Object::Object(const char *str): holder(new String(str)), type(STRING_T){
     //empty
 }
-Object::Object(const std::string &str): holder(new std::string(str)), type(STRING_T){
+Object::Object(const String &str): holder(new String(str)), type(STRING_T){
     //empty
 }
 Object::Object(const JSONArray &jsonArray): holder(new JSONArray(jsonArray)), type(JSON_ARRAY_T){
@@ -27,25 +31,24 @@ Object::Object(const JSONArray &jsonArray): holder(new JSONArray(jsonArray)), ty
 Object::Object(const JSONObject &jsonObject): holder(new JSONObject(jsonObject)), type(JSON_OBJECT_T){
     //empty
 }
-
 Object::Object(const Object &object): type(object.type){
     switch (type) {
         case NULL_T:
             break;
         case BOOL_T:
-            holder = new bool(*((bool *) object.holder));
+            holder = new Bool(*reinterpret_cast<Bool*>(object.holder));
             break;
         case DOUBLE_T:
-            holder = new long double(*((long double *) object.holder));
+            holder = new Number(*reinterpret_cast<Number*>(object.holder));
             break;
         case STRING_T:
-            holder = new std::string(*((std::string *) object.holder));
+            holder = new String(*reinterpret_cast<String*>(object.holder));
             break;
         case JSON_ARRAY_T:
-            holder = new JSONArray(*((JSONArray *) object.holder));
+            holder = new JSONArray(*reinterpret_cast<JSONArray*>(object.holder));
             break;
         case JSON_OBJECT_T:
-            holder = new JSONObject(*((JSONObject *) object.holder));
+            holder = new JSONObject(*reinterpret_cast<JSONObject*>(object.holder));
             break;
         default:
             throw std::runtime_error("Object::Object");
@@ -63,51 +66,51 @@ Object &Object::operator=(std::nullptr_t){
     }
     return *this;
 }
-Object &Object::operator=(bool b){
+Object &Object::operator=(Bool b){
     if(type == BOOL_T){
-        *(bool*)holder = b;
+        *(Bool*)holder = b;
     }else{
         if (type != NULL_T) {
             delVal();
         }
         type = BOOL_T;
-        holder = new bool(b);
+        holder = new Bool(b);
     }
     return *this;
 }
-Object &Object::operator=(long double num){
+Object &Object::operator=(Number num){
     if(type == DOUBLE_T){
-        *(long double*)holder = num;
+        *(Number*)holder = num;
     }else{
         if (type != NULL_T) {
             delVal();
         }
         type = DOUBLE_T;
-        holder = new long double(num);
+        holder = new Number(num);
     }
     return *this;
 }
 Object &Object::operator=(const char *str){
     if(type == STRING_T){
-        *(std::string*)holder = str;
+        *(String*)holder = str;
     }else{
         if (type != NULL_T) {
             delVal();
         }
         type = STRING_T;
-        holder = new std::string(str);
+        holder = new String(str);
     }
     return *this;
 }
-Object &Object::operator=(const std::string &str){
+Object &Object::operator=(const String &str){
     if(type == STRING_T){
-        *(std::string*)holder = str;
+        *(String*)holder = str;
     }else{
         if (type != NULL_T) {
             delVal();
         }
         type = STRING_T;
-        holder = new std::string(str);
+        holder = new String(str);
     }
     return *this;
 }
@@ -141,13 +144,13 @@ Object &Object::operator=(const Object &object){
             case NULL_T:
                 break;
             case BOOL_T:
-                *((bool *)holder) = *((bool*)object.holder);
+                *((Bool *)holder) = *((Bool*)object.holder);
                 break;
             case DOUBLE_T:
-                *((long double *)holder) = *((long double*)object.holder);
+                *((Number *)holder) = *((Number*)object.holder);
                 break;
             case STRING_T:
-                *((std::string *)holder) = *((std::string*)object.holder);
+                *((String *)holder) = *((String*)object.holder);
                 break;
             case JSON_ARRAY_T:
                 *((JSONArray *)holder) = *((JSONArray*)object.holder);
@@ -165,13 +168,13 @@ Object &Object::operator=(const Object &object){
             case NULL_T:
                 break;
             case BOOL_T:
-                holder = new bool(*((bool *) object.holder));
+                holder = new Bool(*((Bool *) object.holder));
                 break;
             case DOUBLE_T:
-                holder = new long double(*((long double *) object.holder));
+                holder = new Number(*((Number *) object.holder));
                 break;
             case STRING_T:
-                holder = new std::string(*((std::string *) object.holder));
+                holder = new String(*((String *) object.holder));
                 break;
             case JSON_ARRAY_T:
                 holder = new JSONArray(*((JSONArray *) object.holder));
@@ -193,14 +196,14 @@ Object::Type Object::getType() const{
 bool Object::isNull(){
     return type == NULL_T;
 }
-bool& Object::getBool(){
-    return *((bool*)holder);
+Bool& Object::getBool(){
+    return *((Bool*)holder);
 }
-long double& Object::getNumber(){
-    return *((long double*)holder);
+Number& Object::getNumber(){
+    return *((Number*)holder);
 }
-std::string& Object::getString(){
-    return *((std::string*)holder);
+String& Object::getString(){
+    return *((String*)holder);
 }
 JSONArray& Object::getJSONArray(){
     return *((JSONArray*)holder);
@@ -209,14 +212,14 @@ JSONObject& Object::getJSONObject(){
     return *((JSONObject*)holder);
 }
 
-const bool& Object::getBool() const{
-    return *((bool*)holder);
+const Bool& Object::getBool() const{
+    return *((Bool*)holder);
 }
-const long double& Object::getNumber() const{
-    return *((long double*)holder);
+const Number& Object::getNumber() const{
+    return *((Number*)holder);
 }
-const std::string& Object::getString() const{
-    return *((std::string*)holder);
+const String& Object::getString() const{
+    return *((String*)holder);
 }
 const JSONArray& Object::getJSONArray() const{
     return *((JSONArray*)holder);
@@ -230,14 +233,14 @@ std::string Object::toString() const{
         case NULL_T:
             return "null";
         case BOOL_T:
-            return *((bool*)holder)?"true":"false";
+            return *((Bool*)holder)?"true":"false";
         case DOUBLE_T:{
             std::stringstream ss;
-            ss << std::setprecision(18) << *((long double*)holder);
+            ss << std::setprecision(18) << *((Number*)holder);
             return ss.str();
         }
         case STRING_T:
-            return "\"" + *((std::string*)holder) + "\"";
+            return "\"" + *((String*)holder) + "\"";
         case JSON_ARRAY_T:
             return ((JSONArray*)holder)->toString();
         case JSON_OBJECT_T:
@@ -252,13 +255,13 @@ void Object::delVal(){
     case NULL_T:
         break;
     case BOOL_T:
-        delete ((bool*)holder);
+        delete ((Bool*)holder);
         break;
     case DOUBLE_T:
-        delete ((long double*)holder);
+        delete ((Number*)holder);
         break;
     case STRING_T:
-        delete ((std::string*)holder);
+        delete ((String*)holder);
         break;
     case JSON_ARRAY_T:
         delete ((JSONArray*)holder);

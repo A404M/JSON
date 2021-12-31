@@ -61,7 +61,7 @@ namespace json{
                         break;
                 }
             }else{
-                result += *it;
+                result += c;
             }
         }
         throw std::runtime_error("no closing \"");

@@ -67,7 +67,7 @@ JSONArray::size_type JSONArray::size() const {
     return holder.size();
 }
 
-really_inline void JSONArray::getNextValue(std::string::const_iterator &begin,std::string::const_iterator end) {
+void JSONArray::getNextValue(std::string::const_iterator &begin,std::string::const_iterator end) {
     jumpAcrossSpaces(begin,end);
     auto c = *begin;
     switch(c){
@@ -93,7 +93,7 @@ really_inline void JSONArray::getNextValue(std::string::const_iterator &begin,st
         case '-':
             goto NUMBER;
         default:
-            if(isdigit(c)){
+            if(isDigit(c)){
                 NUMBER:
                 holder.emplace_back(getNextDouble(begin, end));
                 return;

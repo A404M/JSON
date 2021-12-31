@@ -70,7 +70,7 @@ JSONObject::size_type JSONObject::size() const {
     return holder.size();
 }
 
-really_inline void JSONObject::getNextValue(std::string::const_iterator &begin,std::string::const_iterator end) {
+void JSONObject::getNextValue(std::string::const_iterator &begin,std::string::const_iterator end) {
     jumpAcrossSpaces(begin,end);
     std::string key = getNextString(begin,end);
     if(*begin != ':')
@@ -101,7 +101,7 @@ really_inline void JSONObject::getNextValue(std::string::const_iterator &begin,s
         case '-':
             goto NUMBER;
         default:
-            if(isdigit(c)){
+            if(isDigit(c)){
                 NUMBER:
                 holder.emplace(key,getNextDouble(begin,end));
                 return;
