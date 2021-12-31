@@ -3,27 +3,17 @@
 namespace json{
     extern std::string getNextString(std::string::const_iterator &begin,std::string::const_iterator end){
         std::string result;
-        auto it = begin;
-        if(*it != '\"'){
-            throw std::runtime_error("getNextString");
-        }
-        ++it;
-        for(;it < end;++it){
-            auto c = *it;
+        ++begin;
+        for(;begin < end; ++begin){
+            auto c = *begin;
             if(c == '\"'){
-                begin = ++it;
+                ++begin;
                 return result;//without string markers
             }else if(c == '\\'){
-                ++it;
-                switch(*it){
-                    case 'a':
-                        result += '\a';
-                        break;
+                ++begin;
+                switch(*begin){
                     case 'b':
                         result += '\b';
-                        break;
-                    case 'e':
-                        result += '\e';//escape
                         break;
                     case 'f':
                         result += '\f';
@@ -37,26 +27,22 @@ namespace json{
                     case 't':
                         result += '\t';
                         break;
-                    case 'v':
-                        result += '\v';
-                        break;
                     case '\\':
                         result += '\\';
                         break;
                     case '\"':
                         result += '\"';
                         break;
-                    case '\'':
-                        result += '\'';
+                    case 'u': {
+                        auto tmp = ++begin;
+                        unicodeToUTF8(hexToDecimal(std::string(tmp, begin += 4)), result);
                         break;
-                    case '?':
-                        result += '\?';//? character
+                    }
+                    case '/':
+                        result += '/';
                         break;
-                    case 'u':
-                        ++it;
-                        unicodeToUTF8(hexToDecimal(std::string(it,it+4)),result);
-                        it += 4;
-                        break;
+                    default:
+                        throw std::runtime_error("getNextString");
                 }
             }else{
                 result += c;
@@ -75,54 +61,25 @@ namespace json{
         return result;
     }
 
-    extern bool getNextBool(std::string::const_iterator &begin,std::string::const_iterator end){
-        auto c = *begin;
-        if(c == 't'){
-            if(*++begin == 'r' && *++begin == 'u' && *++begin == 'e'){
-                ++begin;
-                if(begin >= end)
-                    throw std::runtime_error("getNextBool");
-                return true;
-            }
-        }else if(c == 'f'){
-            if(*++begin == 'a' && *++begin == 'l' && *++begin == 's' && *++begin == 'e'){
-                ++begin;
-                if(begin >= end)
-                    throw std::runtime_error("getNextBool");
-                return false;
-            }
-        }
-        throw std::runtime_error("unknown keywrod");
-    }
-
-    extern bool isNextNull(std::string::const_iterator &begin,std::string::const_iterator end){
-        if(*begin == 'n' && *++begin == 'u' && *++begin == 'l' && *++begin == 'l'){
-            ++begin;
-            if(begin >= end)
-                throw std::runtime_error("getNextBool");
-            return true;
-        }
-        throw std::runtime_error("unknown keyword");
-    }
     extern void jumpAcrossSpaces(std::string::const_iterator &begin,std::string::const_iterator end){
         for(;std::isspace(*begin) && begin < end;++begin);
     }
+
+    extern bool isDigit(char c){
+        return c >= '0' && c <= '9';
+    }
+
     extern void unicodeToUTF8(unsigned int codepoint,std::string &out){
         if (codepoint <= 0x7f)
             out.append(1, static_cast<char>(codepoint));
-        else if (codepoint <= 0x7ff)
-        {
+        else if (codepoint <= 0x7ff){
             out.append(1, static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
             out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
-        }
-        else if (codepoint <= 0xffff)
-        {
+        }else if (codepoint <= 0xffff){
             out.append(1, static_cast<char>(0xe0 | ((codepoint >> 12) & 0x0f)));
             out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
             out.append(1, static_cast<char>(0x80 | (codepoint & 0x3f)));
-        }
-        else
-        {
+        }else{
             out.append(1, static_cast<char>(0xf0 | ((codepoint >> 18) & 0x07)));
             out.append(1, static_cast<char>(0x80 | ((codepoint >> 12) & 0x3f)));
             out.append(1, static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
@@ -140,7 +97,6 @@ namespace json{
             }else{
                 throw std::runtime_error("hexToDecimal");
             }
-
             p *= 16;
         }
         return result;

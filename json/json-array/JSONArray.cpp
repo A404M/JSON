@@ -8,17 +8,21 @@ JSONArray::JSONArray() : holder() {
     //empty
 }
 JSONArray::JSONArray(const std::string &str) {
-    auto begin = str.begin();
-    *this = JSONArray(begin,str.end());
-    if(begin != str.end()){
+    auto begin = str.begin(), end = str.end();
+
+    jumpAcrossSpaces(begin,end);
+    if(*begin != '[')
         throw std::runtime_error("JSONArray::JSONArray");
-    }
+
+    jumpAcrossSpaces(begin,end);
+    *this = JSONArray(begin,end);
+
+    jumpAcrossSpaces(begin,end);
+    if(begin != str.end())
+        throw std::runtime_error("JSONArray::JSONArray");
 }
 JSONArray::JSONArray(std::string::const_iterator &begin,std::string::const_iterator end) : holder() {
     //holder.reserve(1024*1024);
-    if(*begin != '['){
-        throw std::runtime_error("JSONArray::JSONArray");
-    }
     if(*++begin == ']'){
         ++begin;
         return;
@@ -75,14 +79,26 @@ void JSONArray::getNextValue(std::string::const_iterator &begin,std::string::con
             holder.emplace_back(getNextString(begin, end));
             return;
         case 't':
+            if(*++begin == 'r' && *++begin == 'u' && *++begin == 'e') {
+                ++begin;
+                holder.emplace_back(true);
+                return;
+            }
+            break;
         case 'f':
-            holder.emplace_back(getNextBool(begin, end));
-            return;
+            if(*++begin == 'a' && *++begin == 'l' && *++begin == 's' && *++begin == 'e') {
+                ++begin;
+                holder.emplace_back(false);
+                return;
+            }
+            break;
         case 'n':
-            if(isNextNull(begin,end)){
+            if(*++begin == 'u' && *++begin == 'l' && *++begin == 'l'){
+                ++begin;
                 holder.emplace_back();//null
                 return;
             }
+            break;
         case '[':
             holder.emplace_back(JSONArray(begin, end));
             return;
@@ -93,11 +109,12 @@ void JSONArray::getNextValue(std::string::const_iterator &begin,std::string::con
         case '-':
             goto NUMBER;
         default:
-            if(isDigit(c)){
+            if(isDigit(c)) {
                 NUMBER:
                 holder.emplace_back(getNextDouble(begin, end));
                 return;
             }
+        break;
     }
     throw std::runtime_error("getValue");
 }

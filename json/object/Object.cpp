@@ -1,7 +1,7 @@
 #include "Object.hpp"
 #include "../json-array/JSONArray.hpp"
 #include "../json-object/JSONObject.hpp"
-//#include <sstream>
+#include <sstream>
 #include <iomanip>
 
 using namespace json;
@@ -10,27 +10,13 @@ using Bool = Object::Bool;
 using Number = Object::Number;
 using String = Object::String;
 
-Object::Object(nullptr_t): holder(nullptr), type(NULL_T){
-    //empty
-}
-Object::Object(Bool b): holder(new Bool(b)), type(BOOL_T){
-    //empty
-}
-Object::Object(Number num): holder(new Number(num)), type(DOUBLE_T){
-    //empty
-}
-Object::Object(const char *str): holder(new String(str)), type(STRING_T){
-    //empty
-}
-Object::Object(const String &str): holder(new String(str)), type(STRING_T){
-    //empty
-}
-Object::Object(const JSONArray &jsonArray): holder(new JSONArray(jsonArray)), type(JSON_ARRAY_T){
-    //empty
-}
-Object::Object(const JSONObject &jsonObject): holder(new JSONObject(jsonObject)), type(JSON_OBJECT_T){
-    //empty
-}
+Object::Object(nullptr_t): holder(nullptr), type(NULL_T){/*empty*/}
+Object::Object(Bool b): holder(new Bool(b)), type(BOOL_T){/*empty*/}
+Object::Object(Number num): holder(new Number(num)), type(DOUBLE_T){/*empty*/}
+Object::Object(const char *str): holder(new String(str)), type(STRING_T){/*empty*/}
+Object::Object(const String &str): holder(new String(str)), type(STRING_T){/*empty*/}
+Object::Object(const JSONArray &jsonArray): holder(new JSONArray(jsonArray)), type(JSON_ARRAY_T){/*empty*/}
+Object::Object(const JSONObject &jsonObject): holder(new JSONObject(jsonObject)), type(JSON_OBJECT_T){/*empty*/}
 Object::Object(const Object &object): type(object.type){
     switch (type) {
         case NULL_T:

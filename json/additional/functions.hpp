@@ -11,14 +11,10 @@
 namespace json{
     extern std::string getNextString(std::string::const_iterator &begin,std::string::const_iterator end);
     extern long double getNextDouble(std::string::const_iterator &begin,std::string::const_iterator end);
-    extern bool getNextBool(std::string::const_iterator &begin,std::string::const_iterator end);
-    extern bool isNextNull(std::string::const_iterator &begin,std::string::const_iterator end);
     extern void jumpAcrossSpaces(std::string::const_iterator &begin,std::string::const_iterator end);
+    extern bool isDigit(char c);
     extern void unicodeToUTF8(unsigned int codepoint,std::string &result);
     extern unsigned int hexToDecimal(const std::string &hex);
-    really_inline bool isDigit(char c){
-        return c >= '0' && c <= '9';
-    }
 }//namespace json
 
 

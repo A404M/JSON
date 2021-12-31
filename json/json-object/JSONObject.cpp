@@ -9,14 +9,21 @@ JSONObject::JSONObject() : holder() {
 }
 
 JSONObject::JSONObject(const std::string &str) {
-    auto begin = str.begin();
-    *this = JSONObject(begin,str.end());
+    auto begin = str.begin(),end = str.end();
+
+    jumpAcrossSpaces(begin,end);
+    if(*begin != '{')
+        throw std::runtime_error("JSONObject::JSONObject");
+
+    jumpAcrossSpaces(begin,end);
+    *this = JSONObject(begin,end);
+
+    jumpAcrossSpaces(begin,end);
+    if(begin != str.end())
+        throw std::runtime_error("JSONArray::JSONArray");
 }
 
 JSONObject::JSONObject(std::string::const_iterator &begin,std::string::const_iterator end) {
-    if(*begin != '{'){
-        throw std::runtime_error("JSONObject::JSONObject");
-    }
     if(*(++begin) == '}'){
         ++begin;
         return;
@@ -72,6 +79,8 @@ JSONObject::size_type JSONObject::size() const {
 
 void JSONObject::getNextValue(std::string::const_iterator &begin,std::string::const_iterator end) {
     jumpAcrossSpaces(begin,end);
+    if(*begin != '\"')
+        throw std::runtime_error("excepted '\"'");
     std::string key = getNextString(begin,end);
     if(*begin != ':')
         throw std::runtime_error("excepted ':'");
@@ -83,14 +92,26 @@ void JSONObject::getNextValue(std::string::const_iterator &begin,std::string::co
             holder.emplace(key,getNextString(begin,end));
             return;
         case 't':
+            if(*++begin == 'r' && *++begin == 'u' && *++begin == 'e') {
+                ++begin;
+                holder.emplace(key,true);
+                return;
+            }
+            break;
         case 'f':
-            holder.emplace(key,getNextBool(begin,end));
-            return;
+            if(*++begin == 'a' && *++begin == 'l' && *++begin == 's' && *++begin == 'e') {
+                ++begin;
+                holder.emplace(key,true);
+                return;
+            }
+            break;
         case 'n':
-            if(isNextNull(begin,end)){
+            if(*++begin == 'u' && *++begin == 'l' && *++begin == 'l'){
+                ++begin;
                 holder.emplace(key,nullptr);
                 return;
             }
+            break;
         case '[':
             holder.emplace(key,JSONArray(begin,end));
             return;
