@@ -46,6 +46,13 @@ JSONArray::JSONArray(std::string::const_iterator &begin,std::string::const_itera
     ++begin;
 }
 
+JSONArray::JSONArray(JSONArray &&jsonArray) noexcept : holder(std::move(jsonArray.holder)) {/*empty*/}
+
+JSONArray &JSONArray::operator=(JSONArray &&jsonArray) {
+    holder = std::move(jsonArray.holder);
+    return *this;
+}
+
 Object &JSONArray::operator[](size_type index) {
     return holder[index];
 }

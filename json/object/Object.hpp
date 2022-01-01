@@ -32,6 +32,9 @@ namespace json{
         explicit Object(const String &str);
         explicit Object(const JSONArray &jsonArray);
         explicit Object(const JSONObject &jsonObject);
+        explicit Object(String &&str);
+        explicit Object(JSONArray &&jsonArray);
+        explicit Object(JSONObject &&jsonObject);
         Object(const Object &object);
         Object(Object &&object) noexcept;
 
@@ -44,7 +47,11 @@ namespace json{
         Object &operator=(const String &str);
         Object &operator=(const JSONArray &jsonArray);
         Object &operator=(const JSONObject &jsonObject);
+        Object &operator=(String &&str);
+        Object &operator=(JSONArray &&jsonArray);
+        Object &operator=(JSONObject &&jsonObject);
         Object &operator=(const Object &object);
+        Object &operator=(Object &&object) noexcept;
 
         really_inline Type getType() const;
 

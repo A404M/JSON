@@ -13,7 +13,11 @@ int main(){
     std::string fileName;
     cin >> fileName;
     cout << endl << endl;
-    int times = 5;
+    cout << "First Test:\n";
+    doProcess(fileName,avgParseTime);
+    cout << "End First Test.\n\n";
+    avgParseTime = 0;
+    int times = 10;
     for(int i = 0;i < times;++i)
         doProcess(fileName,avgParseTime);
     cout << endl << endl << avgParseTime/times << "ms";

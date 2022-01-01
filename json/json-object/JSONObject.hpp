@@ -21,8 +21,10 @@ namespace json{
         JSONObject(std::string::const_iterator &begin,std::string::const_iterator end);
     public:
         JSONObject(const JSONObject&) = default;
+        JSONObject(JSONObject &&jsonObject) noexcept;
 
         JSONObject &operator=(const JSONObject&) = default;
+        JSONObject &operator=(JSONObject&&);
 
         Object &operator[](const std::string &key);
         const Object &operator[](const std::string &key) const;

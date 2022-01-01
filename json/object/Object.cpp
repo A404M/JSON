@@ -17,6 +17,9 @@ Object::Object(const char *str): holder(new String(str)), type(STRING_T){/*empty
 Object::Object(const String &str): holder(new String(str)), type(STRING_T){/*empty*/}
 Object::Object(const JSONArray &jsonArray): holder(new JSONArray(jsonArray)), type(JSON_ARRAY_T){/*empty*/}
 Object::Object(const JSONObject &jsonObject): holder(new JSONObject(jsonObject)), type(JSON_OBJECT_T){/*empty*/}
+Object::Object(String &&str): holder(new String(std::move(str))), type(STRING_T){/*empty*/}
+Object::Object(JSONArray &&jsonArray): holder(new JSONArray(std::move(jsonArray))), type(JSON_ARRAY_T){/*empty*/}
+Object::Object(JSONObject &&jsonObject): holder(new JSONObject(std::move(jsonObject))), type(JSON_OBJECT_T){/*empty*/}
 Object::Object(const Object &object): type(object.type){
     switch (type) {
         case NULL_T:
@@ -127,6 +130,42 @@ Object &Object::operator=(const JSONObject &jsonObject){
     }
     return *this;
 }
+Object &Object::operator=(String &&str){
+    if(type == STRING_T){
+        *reinterpret_cast<String*>(holder) = std::move(str);
+    }else{
+        if (type != NULL_T) {
+            delVal();
+        }
+        type = STRING_T;
+        holder = new String(std::move(str));
+    }
+    return *this;
+}
+Object &Object::operator=(JSONArray &&jsonArray){
+    if(type == JSON_ARRAY_T){
+        *reinterpret_cast<JSONArray*>(holder) = std::move(jsonArray);
+    }else{
+        if (type != NULL_T) {
+            delVal();
+        }
+        type = JSON_ARRAY_T;
+        holder = new JSONArray(std::move(jsonArray));
+    }
+    return *this;
+}
+Object &Object::operator=(JSONObject &&jsonObject){
+    if(type == JSON_OBJECT_T){
+        *reinterpret_cast<JSONObject*>(holder) = std::move(jsonObject);
+    }else{
+        if (type != NULL_T) {
+            delVal();
+        }
+        type = JSON_OBJECT_T;
+        holder = new JSONObject(std::move(jsonObject));
+    }
+    return *this;
+}
 Object &Object::operator=(const Object &object){
     if(type == object.type){
         switch (type) {
@@ -175,6 +214,15 @@ Object &Object::operator=(const Object &object){
                 throw std::runtime_error("Object::operator=");
         }
     }
+    return *this;
+}
+Object &Object::operator=(Object &&object) noexcept {
+    if(type != NULL_T){
+        delVal();
+    }
+    holder = object.holder;
+    type = object.type;
+    object.type = NULL_T;
     return *this;
 }
 

@@ -21,8 +21,10 @@ namespace json{
         JSONArray(std::string::const_iterator &begin,std::string::const_iterator end);
     public:
         JSONArray(const JSONArray&) = default;
+        JSONArray(JSONArray &&jsonArray) noexcept;
 
         JSONArray &operator=(const JSONArray&) = default;
+        JSONArray &operator=(JSONArray&&);
 
         Object &operator[](size_type key);
         const Object &operator[](size_type index) const;
