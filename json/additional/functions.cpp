@@ -1,7 +1,7 @@
 #include "functions.hpp"
 
 namespace json{
-    extern std::string getNextString(std::string::const_iterator &begin,std::string::const_iterator end){
+    extern Object::String getNextString(std::string::const_iterator &begin,std::string::const_iterator end){
         std::string result;
         ++begin;
         for(;begin < end; ++begin){
@@ -33,14 +33,14 @@ namespace json{
                     case '\"':
                         result += '\"';
                         break;
+                    case '/':
+                        result += '/';
+                        break;
                     case 'u': {
                         auto tmp = ++begin;
                         unicodeToUTF8(hexToDecimal(std::string(tmp, begin += 4)), result);
                         break;
                     }
-                    case '/':
-                        result += '/';
-                        break;
                     default:
                         throw std::runtime_error("getNextString");
                 }
@@ -51,7 +51,7 @@ namespace json{
         throw std::runtime_error("no closing \"");
     }
 
-    extern long double getNextDouble(std::string::const_iterator &begin,std::string::const_iterator end){
+    extern Object::Number getNextDouble(std::string::const_iterator &begin,std::string::const_iterator end){
         char *p;
         auto pbegin = &*begin;
         auto result = std::strtold(pbegin,&p);
@@ -63,10 +63,6 @@ namespace json{
 
     extern void jumpAcrossSpaces(std::string::const_iterator &begin,std::string::const_iterator end){
         for(;std::isspace(*begin) && begin < end;++begin);
-    }
-
-    extern bool isDigit(char c){
-        return c >= '0' && c <= '9';
     }
 
     extern void unicodeToUTF8(unsigned int codepoint,std::string &out){

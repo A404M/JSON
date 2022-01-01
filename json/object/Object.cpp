@@ -40,6 +40,9 @@ Object::Object(const Object &object): type(object.type){
             throw std::runtime_error("Object::Object");
     }
 }
+Object::Object(Object &&object)  noexcept : holder(object.holder), type(object.type){
+    object.type = NULL_T;
+}
 
 Object::~Object(){
     delVal();

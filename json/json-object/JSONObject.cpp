@@ -120,13 +120,20 @@ void JSONObject::getNextValue(std::string::const_iterator &begin,std::string::co
             return;
         case '+':
         case '-':
-            goto NUMBER;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            holder.emplace(key,getNextDouble(begin, end));
+            return;
         default:
-            if(isDigit(c)){
-                NUMBER:
-                holder.emplace(key,getNextDouble(begin,end));
-                return;
-            }
+            break;
     }
     throw std::runtime_error("getValue");
 }

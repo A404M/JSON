@@ -3,16 +3,17 @@
 
 #include "../additional/macros.hpp"
 #include <string>
-#include <map>
+#include <unordered_map>
+#include "../object/Object.hpp"
 
 namespace json{
     class Object;
     class JSONObject{
         friend class JSONArray;
     public:
-        typedef std::map<std::string,Object>::size_type size_type;
+        using size_type = std::unordered_map<std::string,Object>::size_type;
     private:
-        std::map<std::string,Object> holder;
+        std::unordered_map<std::string,Object> holder;
     public:
         JSONObject();
         explicit JSONObject(const std::string &str);

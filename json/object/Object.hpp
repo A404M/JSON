@@ -33,6 +33,7 @@ namespace json{
         explicit Object(const JSONArray &jsonArray);
         explicit Object(const JSONObject &jsonObject);
         Object(const Object &object);
+        Object(Object &&object) noexcept;
 
         ~Object();
 
