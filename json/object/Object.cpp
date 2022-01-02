@@ -52,19 +52,14 @@ Object::~Object(){
 }
 
 Object &Object::operator=(std::nullptr_t){
-    if(type != NULL_T) {
-        delVal();
-        type = NULL_T;
-    }
+    delVal();
     return *this;
 }
 Object &Object::operator=(Bool b){
     if(type == BOOL_T){
         *reinterpret_cast<Bool*>(holder) = b;
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = BOOL_T;
         holder = new Bool(b);
     }
@@ -74,9 +69,7 @@ Object &Object::operator=(Number num){
     if(type == DOUBLE_T){
         *reinterpret_cast<Number*>(holder) = num;
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = DOUBLE_T;
         holder = new Number(num);
     }
@@ -86,9 +79,7 @@ Object &Object::operator=(const char *str){
     if(type == STRING_T){
         *reinterpret_cast<String*>(holder) = str;
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = STRING_T;
         holder = new String(str);
     }
@@ -98,9 +89,7 @@ Object &Object::operator=(const String &str){
     if(type == STRING_T){
         *reinterpret_cast<String*>(holder) = str;
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = STRING_T;
         holder = new String(str);
     }
@@ -110,9 +99,7 @@ Object &Object::operator=(const JSONArray &jsonArray){
     if(type == JSON_ARRAY_T){
         *reinterpret_cast<JSONArray*>(holder) = jsonArray;
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = JSON_ARRAY_T;
         holder = new JSONArray(jsonArray);
     }
@@ -122,9 +109,7 @@ Object &Object::operator=(const JSONObject &jsonObject){
     if(type == JSON_OBJECT_T){
         *reinterpret_cast<JSONObject*>(holder) = jsonObject;
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = JSON_OBJECT_T;
         holder = new JSONObject(jsonObject);
     }
@@ -134,9 +119,7 @@ Object &Object::operator=(String &&str){
     if(type == STRING_T){
         *reinterpret_cast<String*>(holder) = std::move(str);
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = STRING_T;
         holder = new String(std::move(str));
     }
@@ -146,9 +129,7 @@ Object &Object::operator=(JSONArray &&jsonArray){
     if(type == JSON_ARRAY_T){
         *reinterpret_cast<JSONArray*>(holder) = std::move(jsonArray);
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = JSON_ARRAY_T;
         holder = new JSONArray(std::move(jsonArray));
     }
@@ -158,9 +139,7 @@ Object &Object::operator=(JSONObject &&jsonObject){
     if(type == JSON_OBJECT_T){
         *reinterpret_cast<JSONObject*>(holder) = std::move(jsonObject);
     }else{
-        if (type != NULL_T) {
-            delVal();
-        }
+        delVal();
         type = JSON_OBJECT_T;
         holder = new JSONObject(std::move(jsonObject));
     }
@@ -217,9 +196,7 @@ Object &Object::operator=(const Object &object){
     return *this;
 }
 Object &Object::operator=(Object &&object) noexcept {
-    if(type != NULL_T){
-        delVal();
-    }
+    delVal();
     holder = object.holder;
     type = object.type;
     object.type = NULL_T;

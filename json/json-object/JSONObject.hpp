@@ -24,7 +24,7 @@ namespace json{
         JSONObject(JSONObject &&jsonObject) noexcept;
 
         JSONObject &operator=(const JSONObject&) = default;
-        JSONObject &operator=(JSONObject&&);
+        JSONObject &operator=(JSONObject &&jsonObject) noexcept;
 
         Object &operator[](const std::string &key);
         const Object &operator[](const std::string &key) const;

@@ -11,7 +11,7 @@ namespace json{
     class JSONArray{
         friend class JSONObject;
     public:
-        typedef std::vector<Object>::size_type size_type;
+        using size_type = std::vector<Object>::size_type;
     private:
         std::vector<Object> holder;
     public:
@@ -24,7 +24,7 @@ namespace json{
         JSONArray(JSONArray &&jsonArray) noexcept;
 
         JSONArray &operator=(const JSONArray&) = default;
-        JSONArray &operator=(JSONArray&&);
+        JSONArray &operator=(JSONArray &&jsonArray);
 
         Object &operator[](size_type key);
         const Object &operator[](size_type index) const;

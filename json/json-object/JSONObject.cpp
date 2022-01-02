@@ -47,7 +47,7 @@ JSONObject::JSONObject(std::string::const_iterator &begin,std::string::const_ite
 
 JSONObject::JSONObject(JSONObject &&jsonObject)  noexcept : holder(std::move(jsonObject.holder)){/*empty*/}
 
-JSONObject &JSONObject::operator=(JSONObject &&jsonObject) {
+JSONObject &JSONObject::operator=(JSONObject &&jsonObject) noexcept {
     holder = std::move(jsonObject.holder);
     return *this;
 }
